@@ -8,8 +8,7 @@
 * 
 *  Name: Laba Kunwar Student ID: 162983233 Date: 06/13/2025
 *
-*  Published URL: https://assignment3-tau-six.vercel.app/
-                  https://vercel.com/laba-kunwars-projects/assignment3 
+*  Published URL: 
 *
 ********************************************************************************/
 
@@ -20,15 +19,12 @@ const projectData = require('./modules/projects');
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// Critical changes for Vercel:
-// 1. Explicit static file paths
-// 2. Absolute paths for all file operations
-// 3. Simplified initialization
 
-// Serve static files from public directory
+
+
 app.use(express.static(path.join(__dirname, 'public')));
 
-// Serve CSS with correct MIME type
+
 app.get('/css/main.css', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'css', 'main.css'), {
         headers: {
@@ -37,12 +33,12 @@ app.get('/css/main.css', (req, res) => {
     });
 });
 
-// Serve images with correct MIME type
+
 app.get('/images/:file', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'images', req.params.file));
 });
 
-// Initialize data
+
 projectData.initialize()
     .then(() => {
         if (process.env.VERCEL !== '1') {
@@ -55,7 +51,7 @@ projectData.initialize()
         console.error("Failed to initialize data:", err);
     });
 
-// Routes
+
 app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, 'views', 'home.html'));
 });
@@ -82,10 +78,10 @@ app.get('/solutions/projects/:id', (req, res) => {
         .catch(err => res.status(404).json({ error: err }));
 });
 
-// 404 Handler
+
 app.use((req, res) => {
     res.status(404).sendFile(path.join(__dirname, 'views', '404.html'));
 });
 
-// Vercel requires module.exports
+
 module.exports = app;
