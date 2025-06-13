@@ -6,26 +6,28 @@
       "use": "@vercel/node"
     },
     {
-      "src": "public/**",
+      "src": "public/**/*",
       "use": "@vercel/static"
     }
   ],
   "routes": [
     {
-      "src": "/css/(.*)",
-      "dest": "/public/css/$1"
-    },
-    {
-      "src": "/images/(.*)",
-      "dest": "/public/images/$1"
+      "src": "/(css|images)/(.*)",
+      "dest": "/public/$1/$2"
     },
     {
       "src": "/about",
-      "dest": "/views/about.html"
+      "dest": "/views/about.html",
+      "headers": {
+        "Content-Type": "text/html"
+      }
     },
     {
       "src": "/",
-      "dest": "/views/home.html"
+      "dest": "/views/home.html",
+      "headers": {
+        "Content-Type": "text/html"
+      }
     },
     {
       "src": "/(.*)",
