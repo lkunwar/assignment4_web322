@@ -4,31 +4,9 @@
     {
       "src": "server.js",
       "use": "@vercel/node"
-    },
-    {
-      "src": "public/**/*",
-      "use": "@vercel/static"
     }
   ],
   "routes": [
-    {
-      "src": "/(css|images)/(.*)",
-      "dest": "/public/$1/$2"
-    },
-    {
-      "src": "/about",
-      "dest": "/views/about.html",
-      "headers": {
-        "Content-Type": "text/html"
-      }
-    },
-    {
-      "src": "/",
-      "dest": "/views/home.html",
-      "headers": {
-        "Content-Type": "text/html"
-      }
-    },
     {
       "src": "/(.*)",
       "dest": "server.js"

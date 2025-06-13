@@ -8,10 +8,10 @@
 * 
 *  Name: Laba Kunwar Student ID: 162983233 Date: 06/13/2025
 *
-*  Published URL: https://vercel.com/laba-kunwars-projects/assignment3
+*  Published URL: https://assignment3-tau-six.vercel.app/
+                  https://vercel.com/laba-kunwars-projects/assignment3 
 *
 ********************************************************************************/
-
 
 const express = require('express');
 const path = require('path');
@@ -20,63 +20,72 @@ const projectData = require('./modules/projects');
 const app = express();
 const PORT = process.env.PORT || 3000;
 
+// Critical changes for Vercel:
+// 1. Explicit static file paths
+// 2. Absolute paths for all file operations
+// 3. Simplified initialization
 
-app.use(express.static('public'));
+// Serve static files from public directory
+app.use(express.static(path.join(__dirname, 'public')));
 
+// Serve CSS with correct MIME type
+app.get('/css/main.css', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'css', 'main.css'), {
+        headers: {
+            'Content-Type': 'text/css'
+        }
+    });
+});
+
+// Serve images with correct MIME type
+app.get('/images/:file', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'images', req.params.file));
+});
+
+// Initialize data
 projectData.initialize()
     .then(() => {
-        app.listen(PORT, () => {
-            console.log(`Server running on port ${PORT}`);
-        });
+        if (process.env.VERCEL !== '1') {
+            app.listen(PORT, () => {
+                console.log(`Server running on port ${PORT}`);
+            });
+        }
     })
     .catch(err => {
         console.error("Failed to initialize data:", err);
     });
 
-
+// Routes
 app.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, '/views/home.html'));
+    res.sendFile(path.join(__dirname, 'views', 'home.html'));
 });
 
 app.get('/about', (req, res) => {
-    res.sendFile(path.join(__dirname, '/views/about.html'));
+    res.sendFile(path.join(__dirname, 'views', 'about.html'));
 });
 
 app.get('/solutions/projects', (req, res) => {
     const sector = req.query.sector;
     
-    if (sector) {
-        projectData.getProjectsBySector(sector)
-            .then(projects => {
-                res.json(projects);
-            })
-            .catch(err => {
-                res.status(404).send(err);
-            });
-    } else {
-        projectData.getAllProjects()
-            .then(projects => {
-                res.json(projects);
-            })
-            .catch(err => {
-                res.status(404).send(err);
-            });
-    }
+    const dataPromise = sector 
+        ? projectData.getProjectsBySector(sector)
+        : projectData.getAllProjects();
+    
+    dataPromise
+        .then(projects => res.json(projects))
+        .catch(err => res.status(404).json({ error: err }));
 });
 
 app.get('/solutions/projects/:id', (req, res) => {
-    const projectId = parseInt(req.params.id);
-    
-    projectData.getProjectById(projectId)
-        .then(project => {
-            res.json(project);
-        })
-        .catch(err => {
-            res.status(404).send(err);
-        });
+    projectData.getProjectById(parseInt(req.params.id))
+        .then(project => res.json(project))
+        .catch(err => res.status(404).json({ error: err }));
 });
 
-
+// 404 Handler
 app.use((req, res) => {
-    res.status(404).sendFile(path.join(__dirname, '/views/404.html'));
+    res.status(404).sendFile(path.join(__dirname, 'views', '404.html'));
 });
+
+// Vercel requires module.exports
+module.exports = app;
