@@ -1,55 +1,28 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title><%= project.title %></title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link href="/css/main.css" rel="stylesheet">
-</head>
-<body>
+<%- include('partials/navbar', {page: ''}) %>
 
-<%- include('partials/navbar', { page: '' }) %>
+<div class="project-detail">
+  <img src="<%= project.feature_img_url %>" alt="<%= project.title %>" class="feature-img">
 
-<div class="hero bg-base-200 p-8 my-8 rounded-lg">
-  <div class="hero-content text-center">
-    <div class="max-w-2xl">
-      <h1 class="text-4xl font-bold"><%= project.title %></h1>
-      <p class="py-4">Below, you will find detailed information about the project: <%= project.title %></p>
+  <div class="project-content">
+    <div class="project-header">
+      <span class="sector-badge"><%= project.Sector.sector_name %></span>
+      <h1><%= project.title %></h1>
+    </div>
+
+    <div class="project-text">
+      <section class="mb-8">
+        <h2>Introduction</h2>
+        <p><%= project.intro_short %></p>
+      </section>
+
+      <section class="mb-8">
+        <h2>Impact</h2>
+        <p><%= project.impact %></p>
+      </section>
+
+      <a href="<%= project.original_source_url %>" target="_blank" class="source-link">
+        Read Original Source
+      </a>
     </div>
   </div>
 </div>
-
-<div class="max-w-4xl mx-auto px-4 mb-10">
-  <img src="<%= project.feature_img_url %>" alt="Project Image" class="w-full rounded-lg shadow mb-6" />
-
-  <h2 class="text-2xl font-semibold mb-2">Introduction</h2>
-  <p class="mb-4"><%= project.intro_short %></p>
-
-  <h2 class="text-2xl font-semibold mb-2">Impact</h2>
-  <p class="mb-4"><%= project.impact %></p>
-
-  <a href="<%= project.original_source_url %>" target="_blank" class="btn btn-primary mb-6">
-    Learn More (External Link)
-  </a>
-
-  <div id="quoteBox" class="italic text-gray-700 text-center my-6"></div>
-
-  <div class="text-center">
-    <a href="#" onclick="history.back(); return false;" class="btn btn-outline">← Back to Projects</a>
-  </div>
-</div>
-
-<script>
-  document.addEventListener("DOMContentLoaded", async () => {
-    try {
-      const res = await fetch("https://dummyjson.com/quotes/random");
-      const data = await res.json();
-      document.getElementById("quoteBox").innerHTML = `"${data.quote}" — ${data.author}`;
-    } catch (err) {
-      document.getElementById("quoteBox").innerHTML = "Could not load quote.";
-    }
-  });
-</script>
-
-</body>
-</html>
